@@ -52,9 +52,9 @@ async function fetchStockData(ticker, startDate, endDate, interval) {
     try {
         console.log('Received parameters:', { ticker, startDate, endDate, interval });
         
-        // Convert dates to proper format if they're Unix timestamps
-        const start = new Date(parseInt(startDate));
-        const end = new Date(parseInt(endDate));
+        // Convert Unix timestamps (seconds) to milliseconds for Yahoo Finance
+        const start = new Date(parseInt(startDate) * 1000);
+        const end = new Date(parseInt(endDate) * 1000);
         
         console.log('Converted dates:', {
             start: start.toISOString(),
