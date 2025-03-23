@@ -50,9 +50,16 @@ yahooFinance.suppressNotices(['ripHistorical']);
 
 async function fetchStockData(ticker, startDate, endDate, interval) {
     try {
+        console.log('Received parameters:', { ticker, startDate, endDate, interval });
+        
         // Convert dates to proper format if they're Unix timestamps
-        const start = new Date(parseInt(startDate) * 1000);
-        const end = new Date(parseInt(endDate) * 1000);
+        const start = new Date(parseInt(startDate));
+        const end = new Date(parseInt(endDate));
+        
+        console.log('Converted dates:', {
+            start: start.toISOString(),
+            end: end.toISOString()
+        });
         
         // Validate dates
         if (isNaN(start.getTime()) || isNaN(end.getTime())) {
@@ -66,7 +73,7 @@ async function fetchStockData(ticker, startDate, endDate, interval) {
         }
 
         if (start > end) {
-            throw new Error("Start date cannot be after end date");
+            throw new Error(`Start date (${start.toISOString()}) cannot be after end date (${end.toISOString()})`);
         }
 
         const queryOptions = {
@@ -74,6 +81,8 @@ async function fetchStockData(ticker, startDate, endDate, interval) {
             period2: end,
             interval: interval
         };
+        
+        console.log('Query options:', queryOptions);
         
         const data = await yahooFinance.historical(ticker, queryOptions);
 
