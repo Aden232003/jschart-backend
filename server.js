@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
 const yahooFinance = require("yahoo-finance2").default;
 const fetch = require("node-fetch");
 global.fetch = fetch;
@@ -49,9 +48,6 @@ app.use(express.json());
 // Suppress Yahoo Finance notices
 yahooFinance.suppressNotices(['ripHistorical']);
 
-// Serve static files from the React app build directory
-app.use(express.static(path.join(__dirname, '../dist')));
-
 async function fetchStockData(ticker, startDate, endDate, interval) {
     try {
         // Convert dates to proper format if they're Unix timestamps
@@ -96,6 +92,17 @@ async function fetchStockData(ticker, startDate, endDate, interval) {
     }
 }
 
+// API root endpoint
+app.get('/', (req, res) => {
+    res.json({
+        message: 'JSChart Backend API',
+        endpoints: {
+            '/api/stock-data': 'Get historical stock data',
+            '/health': 'Health check endpoint'
+        }
+    });
+});
+
 app.get('/api/stock-data', async (req, res) => {
     try {
         const { ticker, startDate, endDate, timeframe } = req.query;
@@ -114,10 +121,6 @@ app.get('/api/stock-data', async (req, res) => {
 // Add health check endpoint
 app.get('/health', (req, res) => {
     res.status(200).json({ status: 'ok' });
-});
-
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
 
 app.listen(PORT, () => {
