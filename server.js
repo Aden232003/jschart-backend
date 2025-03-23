@@ -52,9 +52,25 @@ async function fetchStockData(ticker, startDate, endDate, interval) {
     try {
         console.log('Received parameters:', { ticker, startDate, endDate, interval });
         
-        // Convert Unix timestamps (seconds) to milliseconds for Yahoo Finance
-        const start = new Date(parseInt(startDate) * 1000);
-        const end = new Date(parseInt(endDate) * 1000);
+        // Convert dates to proper format
+        let start, end;
+        
+        // Check if dates are Unix timestamps (numeric) or YYYY-MM-DD format
+        if (/^\d+$/.test(startDate)) {
+            // Unix timestamp in seconds
+            start = new Date(parseInt(startDate) * 1000);
+        } else {
+            // YYYY-MM-DD format
+            start = new Date(startDate);
+        }
+        
+        if (/^\d+$/.test(endDate)) {
+            // Unix timestamp in seconds
+            end = new Date(parseInt(endDate) * 1000);
+        } else {
+            // YYYY-MM-DD format
+            end = new Date(endDate);
+        }
         
         console.log('Converted dates:', {
             start: start.toISOString(),
